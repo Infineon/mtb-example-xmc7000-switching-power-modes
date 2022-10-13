@@ -41,7 +41,7 @@
 *******************************************************************************/
 
 #include "cy_pdl.h"
-
+#include "cybsp.h"
 
 /*******************************************************************************
 * Function Name: main
@@ -58,11 +58,18 @@
 *******************************************************************************/
 int main(void)
 {
+    /* API return code */
+    cy_rslt_t result;
+
+    /* Initialize the device and board peripherals */
+    result = cybsp_init() ;
+    if (result != CY_RSLT_SUCCESS)
+    {
+        CY_ASSERT(0);
+    }
+
     /* enable interrupts */
     __enable_irq();
-    
-    /* Gets core clock frequency and updates SystemCoreClock */
-    SystemCoreClockUpdate();
 
     for(;;)
     {

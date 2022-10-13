@@ -41,6 +41,7 @@
 *******************************************************************************/
 
 #include "cy_pdl.h"
+#include "cybsp.h"
 
 /*******************************************************************************
 * Macros
@@ -53,10 +54,11 @@
 ********************************************************************************
 * Summary:
 * This is the main function for the CM0P core. It does...
-*    1. Enable interrupts.
-*    2. Enable the CM7_0 core and/or CM7_1 core, according to macro CM7_DUAL setting.
+*    1. Initialize the device and board peripherals.
+*    2. Enable interrupts.
+*    3. Enable the CM7_0 core and/or CM7_1 core, according to macro CM7_DUAL setting.
 *    Do Forever loop:
-*    2. Put the CM0P core into DeepSleep mode.
+*    4. Put the CM0P core into DeepSleep mode.
 *
 * Parameters:
 *  void
@@ -67,25 +69,24 @@
 *******************************************************************************/
 int main(void)
 {
+    /* API return code */
+    cy_rslt_t result;
+
+    /* Initialize the device and board peripherals */
+    result = cybsp_init() ;
+    if (result != CY_RSLT_SUCCESS)
+    {
+        CY_ASSERT(0);
+    }
+
     /* enable interrupts */
     __enable_irq();
 
     /* Enable CM7_0/1. CY_CORTEX_M7_APPL_ADDR is calculated in linker script, check it in case of problems. */
     Cy_SysEnableCM7(CORE_CM7_0, CY_CORTEX_M7_0_APPL_ADDR);
-
-    /* Wait for the clocks initialization to complete, to avoid race between CM7's.
-     * NOTE: the user application can also synchronize this using IPC or other way. 
-     */
-    Cy_SysLib_Delay(1000);
-
 #if CM7_DUAL
     Cy_SysEnableCM7(CORE_CM7_1, CY_CORTEX_M7_1_APPL_ADDR);
 #endif /* CM7_DUAL */
-
-    /* Gets core clock frequency and updates SystemCoreClock */
-    SystemCoreClockUpdate();
-
-    Cy_SysPm_CpuSleepOnExit(true);
 
     for(;;)
     {
