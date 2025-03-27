@@ -1,14 +1,14 @@
 /******************************************************************************
 * File Name:   main.c
 *
-* Description: This is the source code for CM0+ in XMC7000 MCU switching between 
+* Description: This is the source code for CM0+ in XMC7000 MCU switching between
 *              power modes application for ModusToolbox.
 *
 * Related Document: See Readme.md
 *
 *
 *******************************************************************************
-* Copyright 2022-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2022-2025, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -42,6 +42,7 @@
 
 #include "cy_pdl.h"
 #include "cybsp.h"
+#include "cyhal.h"
 
 /*******************************************************************************
 * Macros
@@ -85,6 +86,7 @@ int main(void)
     /* Enable CM7_0/1. CY_CORTEX_M7_APPL_ADDR is calculated in linker script, check it in case of problems. */
     Cy_SysEnableCM7(CORE_CM7_0, CY_CORTEX_M7_0_APPL_ADDR);
 #if CM7_DUAL
+    cyhal_system_delay_ms(1);
     Cy_SysEnableCM7(CORE_CM7_1, CY_CORTEX_M7_1_APPL_ADDR);
 #endif /* CM7_DUAL */
 
